@@ -23,54 +23,57 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="item in filteredProducts" :key="item.codigo" :class="{ 'low-stock': item.stock < item.stockMinimo }">
+        <tr
+          v-for="item in filteredProducts"
+          :key="item.codigo"
+          :class="{ 'low-stock': item.stock < item.stockMinimo }"
+        >
           <td>{{ item.codigo }}</td>
           <td>{{ item.nombre }}</td>
           <td>{{ item.categoria }}</td>
-          <td>{{ item.stock }} {{ item.unidad }}</td>
-          <td>{{ item.stockMinimo }} {{ item.unidad }}</td>
+          <td>{{ item.stock }}</td>
+          <td>{{ item.stockMinimo }}</td>
           <td>{{ item.unidad }}</td>
           <td>
-            <span v-if="item.stock < item.stockMinimo" class="alert-icon" @click="showStockAlert(item)">⚠️</span>
+            <span
+              v-if="item.stock < item.stockMinimo"
+              class="alert-icon"
+              @click="showStockAlert(item)"
+            >
+              ⚠️
+            </span>
           </td>
           <td>
-            <button class="edit-button" @click="editProduct(item)">✏️ Editar</button>
-            <button class="delete-button" @click="confirmDelete(item)">🗑️ Eliminar</button>
+            <button class="edit-button" @click="editProduct(item)">Editar</button>
+            <button class="delete-button" @click="deleteProduct(item)">Eliminar</button>
           </td>
         </tr>
       </tbody>
     </table>
 
-    <AddProductComponent v-if="showModal" @save="addProduct" @close="showModal = false" />
+    <AddProductComponent
+      v-if="showModal"
+      @save="handleSave"
+      @close="showModal = false"
+    />
 
     <EditProductComponent
-      v-if="editingProduct"
-      :product="editingProduct"
-      @save="updateProduct"
-      @close="editingProduct = null"
+      v-if="showEditModal"
+      :product="selectedProduct"
+      @save="handleSave"
+      @close="showEditModal = false"
     />
-
-    <ConfirmDeleteComponent
-      :product="productToDelete"
-      :showModal="showConfirmModal"
-      @delete="deleteProduct"
-      @close="closeConfirmModal"
-    />
-
- 
-    <LowStockAlertComponent v-if="showAlertModal" :show="showAlertModal" :product="alertProduct" @close="closeAlertModal" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import axios from 'axios'
 import AddProductComponent from '@/components/AddProductComponent.vue'
 import EditProductComponent from '@/components/EditProductComponent.vue'
-import ConfirmDeleteComponent from '@/components/ConfirmDeleteComponent.vue'
-import LowStockAlertComponent from '@/components/LowStockAlertComponent.vue'
 
 interface Product {
-  codigo: string
+  codigo: number
   nombre: string
   categoria: string
   stock: number
@@ -81,73 +84,79 @@ interface Product {
 const search = ref<string>('')
 const selectedCategory = ref<string>('')
 const showModal = ref<boolean>(false)
-const editingProduct = ref<Product | null>(null)
-const showConfirmModal = ref<boolean>(false)
-const productToDelete = ref<Product | null>(null)
-const showAlertModal = ref<boolean>(false)
-const alertProduct = ref<Product | null>(null)
+const showEditModal = ref<boolean>(false)
+const products = ref<Product[]>([])
+const selectedProduct = ref<Product | null>(null)
 
-const products = ref<Product[]>([
-  { codigo: '001', nombre: 'Costilla de cerdo', categoria: 'Carnes', stock: 20, stockMinimo: 10, unidad: 'kilos' },
-  { codigo: '012', nombre: 'Cerveza poker', categoria: 'Bebidas', stock: 30, stockMinimo: 50, unidad: 'Botellas' },
-  { codigo: '035', nombre: 'Queso Doblecrema', categoria: 'Lacteos', stock: 8, stockMinimo: 5, unidad: 'kilos' },
-  { codigo: '054', nombre: 'Tomate', categoria: 'Frutas y Verduras', stock: 7, stockMinimo: 10, unidad: 'kilos' },
-  { codigo: '067', nombre: 'Arroz', categoria: 'Granos', stock: 15, stockMinimo: 25, unidad: 'kilos' }
-])
+// Función para cargar productos desde el backend
+async function fetchProducts() {
+  try {
+    const response = await axios.get('http://localhost:3333/api/v1/inventario')
+    console.log('Productos cargados:', response.data) // Verificar los datos cargados
 
+    // Mapear los datos del backend a la estructura esperada
+    products.value = response.data.map((item: any) => ({
+      codigo: item.codigo,
+      nombre: item.nombreProducto, // Mapeo de nombreProducto a nombre
+      categoria: item.categoria,
+      stock: item.stock,
+      stockMinimo: item.minStock, // Mapeo de minStock a stockMinimo
+      unidad: item.uM, // Mapeo de uM a unidad
+    }))
+  } catch (error) {
+    console.error('Error al cargar los productos:', error)
+    alert('Ocurrió un error al cargar los productos')
+  }
+}
+
+// Llamar a la función para cargar los productos al montar el component
+onMounted(() => {
+  fetchProducts()
+})
+
+// Computed para obtener las categorías únicas
 const categories = computed<string[]>(() => [...new Set(products.value.map(p => p.categoria))])
 
+// Computed para filtrar los productos según la búsqueda y la categoría seleccionada
 const filteredProducts = computed<Product[]>(() => {
-  return products.value.filter(p => {
-    const matchesSearch = p.nombre.toLowerCase().includes(search.value.toLowerCase())
+  return products.value.filter((p) => {
+    const matchesSearch = p.nombre?.toLowerCase().includes(search.value.toLowerCase()) || false
     const matchesCategory = selectedCategory.value ? p.categoria === selectedCategory.value : true
     return matchesSearch && matchesCategory
   })
 })
 
-function addProduct(newProduct: Product) {
-  products.value.push(newProduct)
-  showModal.value = false
+// Función para manejar el evento 'save' y recargar los datos
+function handleSave() {
+  fetchProducts() // Recargar los datos desde el backend
+  showModal.value = false // Cerrar el modal de agregar
+  showEditModal.value = false // Cerrar el modal de edición
 }
 
-function editProduct(product: Product) {
-  editingProduct.value = { ...product }
+// Función para editar un producto
+function editProduct(item: Product) {
+  selectedProduct.value = { ...item } // Copiar los datos del producto seleccionado
+  showEditModal.value = true // Mostrar el modal de edición
 }
 
-function updateProduct(updatedProduct: Product) {
-  const index = products.value.findIndex(p => p.codigo === updatedProduct.codigo)
-  if (index !== -1) {
-    products.value[index] = updatedProduct
+// Función para eliminar un producto
+async function deleteProduct(item: Product) {
+  const confirmed = confirm(`¿Estás seguro de que deseas eliminar el producto "${item.nombre}"?`)
+  if (!confirmed) return
+
+  try {
+    await axios.delete(`http://localhost:3333/api/v1/inventario/${item.codigo}`)
+    fetchProducts() // Recargar los datos después de eliminar
+    alert(`Producto "${item.nombre}" eliminado exitosamente`)
+  } catch (error) {
+    console.error('Error al eliminar el producto:', error)
+    alert('Ocurrió un error al eliminar el producto')
   }
-  editingProduct.value = null
 }
 
-function confirmDelete(product: Product) {
-  productToDelete.value = product
-  showConfirmModal.value = true
-}
-
-function deleteProduct(product: Product) {
-  const index = products.value.findIndex(p => p.codigo === product.codigo)
-  if (index !== -1) {
-    products.value.splice(index, 1)
-  }
-  closeConfirmModal()
-}
-
-function closeConfirmModal() {
-  showConfirmModal.value = false
-  productToDelete.value = null
-}
-
-function showStockAlert(product: Product) {
-  alertProduct.value = product
-  showAlertModal.value = true
-}
-
-function closeAlertModal() {
-  showAlertModal.value = false
-  alertProduct.value = null
+// Función para mostrar una alerta de stock bajo
+function showStockAlert(item: Product) {
+  alert(`El producto "${item.nombre}" tiene un stock bajo (${item.stock} unidades).`);
 }
 </script>
 
@@ -213,5 +222,17 @@ button {
 }
 button:hover {
   background-color: #2563eb;
+}
+.delete-button {
+  background-color: #f87171;
+  color: white;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+.delete-button:hover {
+  background-color: #ef4444;
 }
 </style>
