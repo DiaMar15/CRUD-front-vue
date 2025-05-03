@@ -73,6 +73,7 @@ import AddProductComponent from '@/components/AddProductComponent.vue'
 import EditProductComponent from '@/components/EditProductComponent.vue'
 
 interface Product {
+  id: number 
   codigo: number
   nombre: string
   categoria: string
@@ -143,16 +144,19 @@ function editProduct(item: Product) {
 
 // Función para eliminar un producto
 async function deleteProduct(item: Product) {
-  const confirmed = confirm(`¿Estás seguro de que deseas eliminar el producto "${item.nombre}"?`)
-  if (!confirmed) return
+  console.log('Intentando eliminar el producto con ID:', item.id); // Depuración
+  const confirmed = confirm(`¿Estás seguro de que deseas eliminar el producto "${item.nombre}"?`);
+  if (!confirmed) return;
 
   try {
-    await axios.delete(`http://localhost:3333/api/v1/inventario/${item.codigo}`)
-    fetchProducts() // Recargar los datos después de eliminar
-    alert(`Producto "${item.nombre}" eliminado exitosamente`)
+    // Realizar la solicitud DELETE al backend
+    const response = await axios.delete(`http://localhost:3333/api/v1/inventario/${item.id}`);
+    console.log('Respuesta del backend:', response.data); // Depuración
+    fetchProducts(); // Recargar los datos después de eliminar
+    alert(`Producto "${item.nombre}" eliminado exitosamente`);
   } catch (error) {
-    console.error('Error al eliminar el producto:', error)
-    alert('Ocurrió un error al eliminar el producto')
+    console.error('Error al eliminar el producto:', error);
+    alert('Ocurrió un error al eliminar el producto');
   }
 }
 
