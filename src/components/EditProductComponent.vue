@@ -33,9 +33,11 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, toRefs, watch } from 'vue'
+import { reactive, watch } from 'vue';
+import axios from 'axios';
 
 interface Producto {
+  id: number; // Asegúrate de incluir el ID del producto
   codigo: string;
   nombre: string;
   categoria: string;
@@ -46,25 +48,45 @@ interface Producto {
 
 const props = defineProps<{
   product: Producto;
-}>()
+}>();
 
 const emits = defineEmits<{
   (event: 'save', product: Producto): void;
   (event: 'close'): void;
-}>()
+}>();
 
-const editableProduct = reactive<Producto>({ ...props.product })
+const editableProduct = reactive<Producto>({ ...props.product });
 
 // Si cambian las props.product (por ejemplo, al abrir otro producto), actualizamos la copia local
 watch(
   () => props.product,
   (newProduct) => {
-    Object.assign(editableProduct, newProduct)
+    Object.assign(editableProduct, newProduct);
   }
-)
+);
 
-function save() {
-  emits('save', { ...editableProduct })
+async function save() {
+  try {
+    console.log('Datos enviados al backend para actualizar:', editableProduct);
+
+    // Realizar la solicitud PUT al backend
+    const response = await axios.put(`http://localhost:3333/api/v1/inventario/${editableProduct.id}`, {
+      nombre_producto: editableProduct.nombre,
+      categoria: editableProduct.categoria,
+      stock: editableProduct.stock,
+      min_stock: editableProduct.stockMinimo,
+      u_m: editableProduct.unidad,
+    });
+
+    console.log('Producto actualizado:', response.data);
+    alert('Producto actualizado exitosamente');
+
+    // Emitir el evento 'save' con los datos actualizados
+    emits('save', { ...editableProduct });
+  } catch (error) {
+    console.error('Error al actualizar el producto:', error);
+    alert('Ocurrió un error al actualizar el producto');
+  }
 }
 </script>
 

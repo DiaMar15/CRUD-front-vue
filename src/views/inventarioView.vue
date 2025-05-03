@@ -73,6 +73,7 @@ import AddProductComponent from '@/components/AddProductComponent.vue'
 import EditProductComponent from '@/components/EditProductComponent.vue'
 
 interface Product {
+  id: number
   codigo: number
   nombre: string
   categoria: string
@@ -109,7 +110,7 @@ async function fetchProducts() {
   }
 }
 
-// Llamar a la función para cargar los productos al montar el component
+// Llamar a la función para cargar los productos al montar el componente
 onMounted(() => {
   fetchProducts()
 })
@@ -135,8 +136,8 @@ function handleSave() {
 
 // Función para editar un producto
 function editProduct(item: Product) {
-  selectedProduct.value = { ...item } // Copiar los datos del producto seleccionado
-  showEditModal.value = true // Mostrar el modal de edición
+  selectedProduct.value = { ...item }; // Asegúrate de que `item` incluya el campo `id`
+  showEditModal.value = true;
 }
 
 // Función para eliminar un producto

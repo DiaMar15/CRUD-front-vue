@@ -14,6 +14,9 @@
   
           <label>Categoría</label>
           <input v-model="product.categoria" type="text" />
+
+          <label>Stock</label>
+          <input v-model="product.stock" type="number" />
   
           <label>Stock mínimo</label>
           <input v-model="product.stockMinimo" type="number" />
@@ -32,11 +35,13 @@
   <script setup lang="ts">
 
   import { defineEmits, reactive } from 'vue';
+  import axios from 'axios';
   
   interface Producto {
     codigo: string;
     nombre: string;
     categoria: string;
+    stock: number;
     stockMinimo: number;
     unidad: string;
   }
@@ -50,17 +55,40 @@
     codigo: '',
     nombre: '',
     categoria: '',
+    stock: 0,
     stockMinimo: 0,
     unidad: '',
   });
   
-  function save() {
-    emits('save', { ...product, stock: 0 });  
-    product.codigo = '';
-    product.nombre = '';
-    product.categoria = '';
-    product.stockMinimo = 0;
-    product.unidad = '';
+  async function save() {
+    try {
+      // Realizar la solicitud POST al backend
+      const response = await axios.post('http://localhost:3333/api/v1/inventario', {
+        codigo: product.codigo,
+        nombre_producto: product.nombre,
+        categoria: product.categoria,
+        stock: product.stock,
+        min_stock: product.stockMinimo,
+        u_m: product.unidad,
+      });
+  
+      console.log('Producto agregado:', response.data);
+      alert('Producto agregado exitosamente');
+  
+      // Emitir el evento 'save' con el producto agregado
+      emits('save', { ...product });
+  
+      // Limpiar el formulario
+      product.codigo = '';
+      product.nombre = '';
+      product.categoria = '';
+      product.stock = 0;
+      product.stockMinimo = 0;
+      product.unidad = '';
+    } catch (error) {
+      console.error('Error al agregar el producto:', error);
+      alert('Ocurrió un error al agregar el producto');
+    }
   }
   </script>
   
@@ -156,4 +184,3 @@
     border: 2px solid #7c3aed;
   }
   </style>
-  
