@@ -73,7 +73,6 @@ import AddProductComponent from '@/components/AddProductComponent.vue'
 import EditProductComponent from '@/components/EditProductComponent.vue'
 
 interface Product {
-  id: number
   codigo: number
   nombre: string
   categoria: string
@@ -97,6 +96,7 @@ async function fetchProducts() {
 
     // Mapear los datos del backend a la estructura esperada
     products.value = response.data.map((item: any) => ({
+      id: item.id, // Incluye el campo `id`
       codigo: item.codigo,
       nombre: item.nombreProducto, // Mapeo de nombreProducto a nombre
       categoria: item.categoria,
@@ -138,6 +138,7 @@ function handleSave() {
 function editProduct(item: Product) {
   selectedProduct.value = { ...item }; // Asegúrate de que `item` incluya el campo `id`
   showEditModal.value = true;
+  console.log('Producto seleccionado para editar:', selectedProduct.value);
 }
 
 // Función para eliminar un producto

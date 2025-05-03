@@ -38,7 +38,7 @@ import axios from 'axios';
 
 interface Producto {
   id: number; // Asegúrate de incluir el ID del producto
-  codigo: string;
+  codigo: number;
   nombre: string;
   categoria: string;
   stock: number;
@@ -71,6 +71,7 @@ async function save() {
 
     // Realizar la solicitud PUT al backend
     const response = await axios.put(`http://localhost:3333/api/v1/inventario/${editableProduct.id}`, {
+      codigo: editableProduct.codigo,
       nombre_producto: editableProduct.nombre,
       categoria: editableProduct.categoria,
       stock: editableProduct.stock,
