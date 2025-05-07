@@ -2,7 +2,6 @@
 import { defineComponent, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
-import axios from 'axios'
 
 export default defineComponent({
   name: 'LoginView',
@@ -12,32 +11,37 @@ export default defineComponent({
     const router = useRouter()
     const authStore = useAuthStore()
 
-    const login = async () => {
+    const login = () => {
+      // Verificar si los campos están vacíos
       if (!username.value || !password.value) {
-        alert('Por favor, ingresa usuario y contraseña');
-        return;
+        alert('Por favor, ingresa usuario y contraseña') // Alerta si algún campo está vacío
+        return
       }
 
-      try {
-        // Realizar la solicitud al backend
-        const response = await axios.post('http://localhost:3333/api/v1/login', {
-          correo: username.value,
-          contrasena: password.value,
-        });
+      const fakeUsers = [
+        { username: 'Adso', password: '123' },
+        { username: 'Juan', password: '456' },
+        { username: 'Maria', password: '789' },
+      ]
 
-        // Obtener el token y los datos del usuario de la respuesta
-        const { token, user } = response.data;
+      const user = fakeUsers.find(
+        (u) => u.username === username.value && u.password === password.value,
+      )
 
-        // Guardar el token y el usuario en Pinia
-        authStore.login(user, token);
+      if (user) {
+        // Aquí puedes agregar la simulación de login
+        const fakeToken = 'fake-jwt-token' // Token simulado
+        const fakeUser = { user, fakeToken } // Datos del usuario simulado
 
-        console.log('Inicio de sesión exitoso');
-        router.push('/home'); // Redirigir al home
-      } catch (error) {
-        console.error('Error al iniciar sesión:', error);
-        alert('Usuario o contraseña incorrectos');
+        // Guardamos el token y el usuario en Pinia
+        authStore.login(fakeUser, fakeToken)
+
+        console.log('Inicio de sesión exitoso')
+        router.push('/home') // Redirigir al home
+      } else {
+        alert('Usuario o contraseña incorrectos')
       }
-    };
+    }
 
     return {
       username,

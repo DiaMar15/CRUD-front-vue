@@ -36,17 +36,17 @@ const router = createRouter({
     },
 
     {
-      path: '/home',
-      name: 'home',
+      path: '/inventario',
+      name: 'inventario',
       component: InventarioView,
-      meta: { layout: 'WireframeLayout' },
+      meta: { layout: 'WireframeLayout' }
     },
 
     {
-      path: '/inventario',
-      name: 'inventario',
+      path: '/home',
+      name: 'home',
       component: HomeView,
-      meta: { layout: 'WireframeLayout' }
+      meta: { layout: 'WireframeLayout' },
     }
   ],
 })
