@@ -6,7 +6,7 @@
     <nav>
       <ul>
         <li><router-link to="/home">Inicio</router-link></li>
-        <li><router-link to="/products">Inventario</router-link></li>
+        <li><router-link to="/inventario">Inventario</router-link></li>
         <li><router-link to="/categories">Categorías</router-link></li>
         <li><router-link to="/orders">Pedidos</router-link></li>
         <li><router-link to="/clients">Clientes</router-link></li>
