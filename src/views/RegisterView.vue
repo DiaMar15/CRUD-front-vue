@@ -1,19 +1,63 @@
 <template>
   <div class="container">
     <div class="form-container">
-      <h1>Encuentra tu cuenta</h1>
-      <form>
-        <input type="email" placeholder="Email" />
-        <input type="password" placeholder="Nueva contraseña" />
-        <input type="password" placeholder="Nueva contraseña" />
+      <h1>¡¡Registrate ahora!!</h1>
+      <form @submit.prevent="register">
+        <input v-model="username" type="text" placeholder="usuario" />
+        <input v-model="email" type="email" placeholder="correo" />
+        <input v-model="password" type="password" placeholder="contraseña" />
 
-        <button type="button">Restablecer contraseña</button>
+        <button type="submit">Crear cuenta</button>
 
         <p><Router-link to="/Login">¿Recuerdas tu contraseña?</Router-link></p>
       </form>
     </div>
   </div>
 </template>
+
+<script lang="ts">
+import { defineComponent, ref } from 'vue';
+import axios from 'axios';
+import { useRouter } from 'vue-router';
+
+export default defineComponent({
+  name: 'RegisterView',
+  setup() {
+    const username = ref('');
+    const email = ref('');
+    const password = ref('');
+    const router = useRouter();
+
+    const register = async () => {
+      if (!username.value || !email.value || !password.value) {
+        alert('Todos los campos son obligatorios');
+        return;
+      }
+
+      try {
+        const response = await axios.post('http://localhost:3333/api/v1/register', {
+          nombre: username.value,
+          correo: email.value,
+          contrasena: password.value,
+        });
+        console.log(response.data);
+        alert('Usuario registrado con éxito');
+        router.push('/Login');
+      } catch (error) {
+        console.error(error);
+        alert('Error al registrar el usuario');
+      }
+    };
+
+    return {
+      username,
+      email,
+      password,
+      register,
+    };
+  },
+});
+</script>
 
 <style>
 .container {
