@@ -34,7 +34,7 @@
 
 <script setup lang="ts">
 import { reactive, watch } from 'vue';
-import axios from 'axios';
+import { updateProduct } from '@/services/inventoryService';
 
 interface Producto {
   id: number; // Asegúrate de incluir el ID del producto
@@ -67,10 +67,7 @@ watch(
 
 async function save() {
   try {
-    console.log('Datos enviados al backend para actualizar:', editableProduct);
-
-    // Realizar la solicitud PUT al backend
-    const response = await axios.put(`http://localhost:3333/api/v1/inventario/${editableProduct.id}`, {
+    await updateProduct(editableProduct.id, {
       codigo: editableProduct.codigo,
       nombre_producto: editableProduct.nombre,
       categoria: editableProduct.categoria,
@@ -78,11 +75,7 @@ async function save() {
       min_stock: editableProduct.stockMinimo,
       u_m: editableProduct.unidad,
     });
-
-    console.log('Producto actualizado:', response.data);
     alert('Producto actualizado exitosamente');
-
-    // Emitir el evento 'save' con los datos actualizados
     emits('save', { ...editableProduct });
   } catch (error) {
     console.error('Error al actualizar el producto:', error);

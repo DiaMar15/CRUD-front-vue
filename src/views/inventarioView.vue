@@ -71,6 +71,7 @@ import { ref, computed, onMounted } from 'vue'
 import axios from 'axios'
 import AddProductComponent from '@/components/AddProductComponent.vue'
 import EditProductComponent from '@/components/EditProductComponent.vue'
+import { getProducts, deleteProduct as deleteProductService } from '@/services/inventoryService'
 
 interface Product {
   id: number 
@@ -92,18 +93,15 @@ const selectedProduct = ref<Product | null>(null)
 // Función para cargar productos desde el backend
 async function fetchProducts() {
   try {
-    const response = await axios.get('http://localhost:3333/api/v1/inventario')
-    console.log('Productos cargados:', response.data) // Verificar los datos cargados
-
-    // Mapear los datos del backend a la estructura esperada
-    products.value = response.data.map((item: any) => ({
-      id: item.id, // Incluye el campo `id`
+    const data = await getProducts()
+    products.value = data.map((item: any) => ({
+      id: item.id,
       codigo: item.codigo,
-      nombre: item.nombreProducto, // Mapeo de nombreProducto a nombre
+      nombre: item.nombreProducto,
       categoria: item.categoria,
       stock: item.stock,
-      stockMinimo: item.minStock, // Mapeo de minStock a stockMinimo
-      unidad: item.uM, // Mapeo de uM a unidad
+      stockMinimo: item.minStock,
+      unidad: item.uM,
     }))
   } catch (error) {
     console.error('Error al cargar los productos:', error)
@@ -144,19 +142,16 @@ function editProduct(item: Product) {
 
 // Función para eliminar un producto
 async function deleteProduct(item: Product) {
-  console.log('Intentando eliminar el producto con ID:', item.id); // Depuración
-  const confirmed = confirm(`¿Estás seguro de que deseas eliminar el producto "${item.nombre}"?`);
-  if (!confirmed) return;
+  const confirmed = confirm(`¿Estás seguro de que deseas eliminar el producto "${item.nombre}"?`)
+  if (!confirmed) return
 
   try {
-    // Realizar la solicitud DELETE al backend
-    const response = await axios.delete(`http://localhost:3333/api/v1/inventario/${item.id}`);
-    console.log('Respuesta del backend:', response.data); // Depuración
-    fetchProducts(); // Recargar los datos después de eliminar
-    alert(`Producto "${item.nombre}" eliminado exitosamente`);
+    await deleteProductService(item.id)
+    fetchProducts()
+    alert(`Producto "${item.nombre}" eliminado exitosamente`)
   } catch (error) {
-    console.error('Error al eliminar el producto:', error);
-    alert('Ocurrió un error al eliminar el producto');
+    console.error('Error al eliminar el producto:', error)
+    alert('Ocurrió un error al eliminar el producto')
   }
 }
 

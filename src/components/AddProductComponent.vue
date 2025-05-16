@@ -35,7 +35,7 @@
   <script setup lang="ts">
 
   import { defineEmits, reactive } from 'vue';
-  import axios from 'axios';
+  import { createProduct } from '@/services/inventoryService';
   
   interface Producto {
     codigo: string;
@@ -62,8 +62,7 @@
   
   async function save() {
     try {
-      // Realizar la solicitud POST al backend
-      const response = await axios.post('http://localhost:3333/api/v1/inventario', {
+      await createProduct({
         codigo: product.codigo,
         nombre_producto: product.nombre,
         categoria: product.categoria,
@@ -71,13 +70,8 @@
         min_stock: product.stockMinimo,
         u_m: product.unidad,
       });
-  
-      console.log('Producto agregado:', response.data);
       alert('Producto agregado exitosamente');
-  
-      // Emitir el evento 'save' con el producto agregado
       emits('save', { ...product });
-  
       // Limpiar el formulario
       product.codigo = '';
       product.nombre = '';
