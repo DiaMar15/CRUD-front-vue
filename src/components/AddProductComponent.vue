@@ -64,7 +64,7 @@
     try {
       await createProduct({
         codigo: product.codigo,
-        nombre_producto: product.nombre,
+        producto: product.nombre,
         categoria: product.categoria,
         stock: product.stock,
         min_stock: product.stockMinimo,

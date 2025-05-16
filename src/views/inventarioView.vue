@@ -97,7 +97,7 @@ async function fetchProducts() {
     products.value = data.map((item: any) => ({
       id: item.id,
       codigo: item.codigo,
-      nombre: item.nombreProducto,
+      nombre: item.producto, // <--- aquí el cambio
       categoria: item.categoria,
       stock: item.stock,
       stockMinimo: item.minStock,

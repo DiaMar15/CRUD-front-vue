@@ -37,7 +37,7 @@ import { reactive, watch } from 'vue';
 import { updateProduct } from '@/services/inventoryService';
 
 interface Producto {
-  id: number; // Asegúrate de incluir el ID del producto
+  id: number; 
   codigo: number;
   nombre: string;
   categoria: string;
@@ -69,7 +69,7 @@ async function save() {
   try {
     await updateProduct(editableProduct.id, {
       codigo: editableProduct.codigo,
-      nombre_producto: editableProduct.nombre,
+      producto: editableProduct.nombre,
       categoria: editableProduct.categoria,
       stock: editableProduct.stock,
       min_stock: editableProduct.stockMinimo,
