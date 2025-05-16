@@ -2,7 +2,7 @@
 import { defineComponent, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
-import axios from 'axios'
+import { loginRequest } from '@/services/authService'
 
 export default defineComponent({
   name: 'LoginView',
@@ -19,23 +19,14 @@ export default defineComponent({
       }
 
       try {
-        // Realizar la solicitud al backend
-        const response = await axios.post('http://localhost:3333/api/v1/login', {
-          correo: username.value,
-          contrasena: password.value,
-        });
-
-        // Obtener el token y los datos del usuario de la respuesta
-        const { token, user } = response.data;
-
-        // Guardar el token y el usuario en Pinia
-        authStore.login(user, token);
-
-        console.log('Inicio de sesión exitoso');
-        router.push('/home'); // Redirigir al home
+        const data = await loginRequest(username.value, password.value)
+        const { token, user } = data
+        authStore.login(user, token)
+        console.log('Inicio de sesión exitoso')
+        router.push('/home')
       } catch (error) {
-        console.error('Error al iniciar sesión:', error);
-        alert('Usuario o contraseña incorrectos');
+        console.error('Error al iniciar sesión:', error)
+        alert('Usuario o contraseña incorrectos')
       }
     };
 

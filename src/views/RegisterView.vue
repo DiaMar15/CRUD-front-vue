@@ -17,8 +17,8 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-import axios from 'axios';
 import { useRouter } from 'vue-router';
+import { registerRequest } from '@/services/authService';
 
 export default defineComponent({
   name: 'RegisterView',
@@ -35,17 +35,12 @@ export default defineComponent({
       }
 
       try {
-        const response = await axios.post('http://localhost:3333/api/v1/register', {
-          nombre: username.value,
-          correo: email.value,
-          contrasena: password.value,
-        });
-        console.log(response.data);
+        await registerRequest(username.value, email.value, password.value);
         alert('Usuario registrado con éxito');
         router.push('/Login');
       } catch (error) {
-        console.error(error);
-        alert('Error al registrar el usuario');
+        console.error('Error al registrar usuario:', error);
+        alert('No se pudo registrar el usuario');
       }
     };
 
