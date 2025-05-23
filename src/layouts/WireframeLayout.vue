@@ -51,10 +51,12 @@ function toggleSidebar() {
 const menuItems = [
   { to: '/dashboard', icon: 'bx-grid-alt', label: 'Dashboard' },
   { to: '/dashboard/inventario', icon: 'bx-folder', label: 'Inventario' },
-  { to: '/dashboard/menu', icon: 'bx-menu', label: 'Menu' },
-  { to: '/dashboard/peso', icon: 'bx-package', label: 'Zona-peso' },
-  { to: '/dashboard/estadistica', icon: 'bx-chart', label: 'Estadísticas' },
-  { to: '/dashboard/administracion', icon: 'bx-cog', label: 'Administración' }
+  { to: '/dashboard/categories', icon: 'bx-purchase-tag', label: 'Categorías' },
+  { to: '/dashboard/orders', icon: 'bx-package', label: 'Ordenes' },
+  { to: '/dashboard/clients', icon: 'bx-chart', label: 'Clientes' },
+  { to: '/dashboard/contact', icon: 'bx-phone', label: 'Contacto' },
+  { to: '/dashboard/configuracion', icon: 'bx-cog', label: 'Configuración' }
+  
 ]
 </script>
 
