@@ -1,14 +1,26 @@
 <template>
-  <div class="inventory-container">
-    <div class="controls">
-      <button class="add-button" @click="showModal = true">Agregar producto</button>
-      <input class="search-input" v-model="search" placeholder="Buscar Producto" />
-      <select class="category-select" v-model="selectedCategory">
+  <div>
+    <!-- NavBar negro -->
+    <nav class="navbar"></nav>
+
+    <!-- Fila de búsqueda -->
+    <div class="search-bar">
+      <input
+        class="search-input"
+        v-model="search"
+        placeholder="Buscar Producto"
+        @keyup.enter="applyFilters"
+      />
+      <select class="category-select" v-model="selectedCategory" @change="applyFilters">
         <option value="">Todas las categorías</option>
         <option v-for="cat in categories" :key="cat" :value="cat">{{ cat }}</option>
       </select>
+      <button class="search-btn" @click="applyFilters">
+        <span class="material-icons">search</span>
+      </button>
     </div>
 
+    <!-- Tabla de productos -->
     <table class="inventory-table">
       <thead>
         <tr>
@@ -39,18 +51,24 @@
               v-if="item.stock < item.stockMinimo"
               class="alert-icon"
               @click="showStockAlert(item)"
+              title="Stock bajo"
             >
               ⚠️
             </span>
           </td>
           <td>
-            <button class="edit-button" @click="editProduct(item)">Editar</button>
-            <button class="delete-button" @click="deleteProduct(item)">Eliminar</button>
+            <button class="icon-btn edit" @click="editProduct(item)" title="Editar">
+              <span class="material-icons">edit</span>
+            </button>
+            <button class="icon-btn delete" @click="deleteProduct(item)" title="Eliminar">
+              <span class="material-icons">delete</span>
+            </button>
           </td>
         </tr>
       </tbody>
     </table>
 
+    <!-- Modales -->
     <AddProductComponent
       v-if="showModal"
       @save="handleSave"
@@ -58,7 +76,7 @@
     />
 
     <EditProductComponent
-      v-if="showEditModal"
+      v-if="showEditModal && selectedProduct"
       :product="selectedProduct"
       @save="handleSave"
       @close="showEditModal = false"
@@ -68,7 +86,6 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import axios from 'axios'
 import AddProductComponent from '@/components/AddProductComponent.vue'
 import EditProductComponent from '@/components/EditProductComponent.vue'
 import { getProducts, deleteProduct as deleteProductService } from '@/services/inventoryService'
@@ -89,58 +106,58 @@ const showModal = ref<boolean>(false)
 const showEditModal = ref<boolean>(false)
 const products = ref<Product[]>([])
 const selectedProduct = ref<Product | null>(null)
+const filteredProducts = ref<Product[]>([])
 
-// Función para cargar productos desde el backend
+// Cargar productos desde el backend
 async function fetchProducts() {
   try {
     const data = await getProducts()
     products.value = data.map((item: any) => ({
       id: item.id,
       codigo: item.codigo,
-      nombre: item.producto, // <--- aquí el cambio
+      nombre: item.producto,
       categoria: item.categoria,
       stock: item.stock,
       stockMinimo: item.minStock,
       unidad: item.uM,
     }))
+    applyFilters()
   } catch (error) {
     console.error('Error al cargar los productos:', error)
     alert('Ocurrió un error al cargar los productos')
   }
 }
 
-// Llamar a la función para cargar los productos al montar el componente
 onMounted(() => {
   fetchProducts()
 })
 
-// Computed para obtener las categorías únicas
+// Categorías únicas
 const categories = computed<string[]>(() => [...new Set(products.value.map(p => p.categoria))])
 
-// Computed para filtrar los productos según la búsqueda y la categoría seleccionada
-const filteredProducts = computed<Product[]>(() => {
-  return products.value.filter((p) => {
+// Filtrar productos por búsqueda y categoría
+function applyFilters() {
+  filteredProducts.value = products.value.filter((p) => {
     const matchesSearch = p.nombre?.toLowerCase().includes(search.value.toLowerCase()) || false
     const matchesCategory = selectedCategory.value ? p.categoria === selectedCategory.value : true
     return matchesSearch && matchesCategory
   })
-})
+}
 
-// Función para manejar el evento 'save' y recargar los datos
+// Guardar cambios y recargar productos
 function handleSave() {
-  fetchProducts() // Recargar los datos desde el backend
-  showModal.value = false // Cerrar el modal de agregar
-  showEditModal.value = false // Cerrar el modal de edición
+  fetchProducts()
+  showModal.value = false
+  showEditModal.value = false
 }
 
-// Función para editar un producto
+// Editar producto
 function editProduct(item: Product) {
-  selectedProduct.value = { ...item }; // Asegúrate de que `item` incluya el campo `id`
-  showEditModal.value = true;
-  console.log('Producto seleccionado para editar:', selectedProduct.value);
+  selectedProduct.value = { ...item }
+  showEditModal.value = true
 }
 
-// Función para eliminar un producto
+// Eliminar producto
 async function deleteProduct(item: Product) {
   const confirmed = confirm(`¿Estás seguro de que deseas eliminar el producto "${item.nombre}"?`)
   if (!confirmed) return
@@ -155,45 +172,64 @@ async function deleteProduct(item: Product) {
   }
 }
 
-// Función para mostrar una alerta de stock bajo
+// Alerta de stock bajo
 function showStockAlert(item: Product) {
   alert(`El producto "${item.nombre}" tiene un stock bajo (${item.stock} unidades).`);
 }
 </script>
 
 <style scoped>
-.inventory-container {
-  padding: 1rem;
-  font-family: Arial, sans-serif;
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+
+.navbar {
+  width: 100%;
+  height: 48px;
+  background: #111;
+  margin-bottom: 1.5rem;
 }
-.controls {
-  margin-bottom: 1rem;
+
+.search-bar {
   display: flex;
-  gap: 1rem;
   align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  background: #fff;
+  padding: 1rem 1.5rem 1rem 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
 }
-.add-button, .edit-button {
-  background-color: #3b82f6;
-  color: white;
-  border: none;
-  padding: 0.4rem 0.8rem;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.9rem;
-}
-.add-button:hover, .edit-button:hover {
-  background-color: #2563eb;
-}
+
 .search-input, .category-select {
-  padding: 0.4rem;
+  padding: 0.5rem 0.8rem;
   border: 1px solid #ccc;
   border-radius: 4px;
+  font-size: 1rem;
 }
+
+.search-btn {
+  background: #3b82f6;
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  padding: 0.4rem 0.7rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  font-size: 1.3rem;
+  transition: background 0.2s;
+}
+.search-btn:hover {
+  background: #2563eb;
+}
+
 .inventory-table {
   width: 100%;
   border-collapse: collapse;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   color: #333;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
 }
 .inventory-table th, .inventory-table td {
   border: 1px solid #ddd;
@@ -213,27 +249,28 @@ function showStockAlert(item: Product) {
   font-size: 1.2rem;
   cursor: pointer;
 }
-button {
-  background-color: #3b82f6;
-  color: white;
+.icon-btn {
   border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
+  background: none;
   cursor: pointer;
-}
-button:hover {
-  background-color: #2563eb;
-}
-.delete-button {
-  background-color: #f87171;
-  color: white;
-  border: none;
-  padding: 0.4rem 0.8rem;
+  padding: 0.2rem 0.4rem;
   border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.9rem;
+  margin-right: 0.2rem;
+  display: inline-flex;
+  align-items: center;
+  font-size: 1.3rem;
+  transition: background 0.2s;
 }
-.delete-button:hover {
-  background-color: #ef4444;
+.icon-btn.edit {
+  color: #22c55e;
+}
+.icon-btn.edit:hover {
+  background: #e0fbe6;
+}
+.icon-btn.delete {
+  color: #ef4444;
+}
+.icon-btn.delete:hover {
+  background: #fee2e2;
 }
 </style>
