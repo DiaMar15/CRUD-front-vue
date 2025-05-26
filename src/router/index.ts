@@ -6,6 +6,7 @@ import RestoreView from '@/views/RestoreView.vue'
 import InventarioView from '@/views/inventarioView.vue'
 import DashboardView from '@/views/HomeView.vue'
 import ConfiguracionView from '@/views/ConfiguracionView.vue' 
+import FacturacompraView from '@/views/FacturacompraView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -48,6 +49,12 @@ const router = createRouter({
       path: '/dashboard/configuracion',
       name: 'configuracion',
       component: ConfiguracionView,
+      meta: { layout: 'WireframeLayout' }
+    },
+    {
+      path: '/dashboard/facturas-compra',
+      name: 'facturas-compra',
+      component: FacturacompraView,
       meta: { layout: 'WireframeLayout' }
     },
   ],

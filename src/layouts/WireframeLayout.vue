@@ -55,8 +55,8 @@ const menuItems = [
   { to: '/dashboard/orders', icon: 'bx-package', label: 'Ordenes' },
   { to: '/dashboard/clients', icon: 'bx-chart', label: 'Clientes' },
   { to: '/dashboard/contact', icon: 'bx-phone', label: 'Contacto' },
+  { to: '/dashboard/facturas-compra', icon: 'bx-receipt', label: 'Facturas Compra' },  
   { to: '/dashboard/configuracion', icon: 'bx-cog', label: 'Configuración' }
-  
 ]
 </script>
 
