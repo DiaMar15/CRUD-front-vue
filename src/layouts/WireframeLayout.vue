@@ -49,12 +49,12 @@ function toggleSidebar() {
 }
 
 const menuItems = [
-  { to: '/dashboard', icon: 'bx-grid-alt', label: 'Dashboard' },
-  { to: '/dashboard/inventario', icon: 'bx-folder', label: 'Inventario' },
-  { to: '/dashboard/menu', icon: 'bx-menu', label: 'Menu' },
-  { to: '/dashboard/peso', icon: 'bx-package', label: 'Zona-peso' },
-  { to: '/dashboard/estadistica', icon: 'bx-chart', label: 'Estadísticas' },
-  { to: '/dashboard/administracion', icon: 'bx-cog', label: 'Administración' }
+  { to: '/home', icon: 'bx-grid-alt', label: 'Inicio' },
+  { to: '/inventario', icon: 'bx-folder', label: 'Inventario' },
+  { to: '/categories', icon: 'bx-menu', label: 'Categorías' },
+  { to: '/orders', icon: 'bx-package', label: 'Pedidos' },
+  { to: '/clients', icon: 'bx-chart', label: 'Clientes' },
+  { to: '/contact', icon: 'bx-cog', label: 'Contacto' }
 ]
 </script>
 

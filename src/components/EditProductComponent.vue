@@ -34,7 +34,9 @@
 
 <script setup lang="ts">
 import { reactive, watch } from 'vue';
-import { updateProduct } from '@/services/inventoryService';
+// Update the import path if the file is in a different location, for example:
+import { updateProduct } from '../services/inventoryService';
+// Or, if the file does not exist, create 'src/services/inventoryService.ts' and export 'updateProduct' from it.
 
 interface Producto {
   id: number; 
