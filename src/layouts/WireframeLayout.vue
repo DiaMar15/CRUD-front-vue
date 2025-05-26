@@ -38,7 +38,7 @@
 </template>
 
 <script setup lang="ts">
-import HeaderWireframeComponent from '../components/HeaderWireframeComponent.vue'
+import { HeaderWireframeComponent } from '@/components/HeaderWireframeComponent.vue'
 import { ref } from 'vue'
 
 const isDarkMode = ref(false)
@@ -49,23 +49,14 @@ function toggleSidebar() {
 }
 
 const menuItems = [
-<<<<<<< HEAD
-  { to: '/home', icon: 'bx-grid-alt', label: 'Inicio' },
-  { to: '/inventario', icon: 'bx-folder', label: 'Inventario' },
-  { to: '/categories', icon: 'bx-menu', label: 'Categorías' },
-  { to: '/orders', icon: 'bx-package', label: 'Pedidos' },
-  { to: '/clients', icon: 'bx-chart', label: 'Clientes' },
-  { to: '/contact', icon: 'bx-cog', label: 'Contacto' }
-=======
   { to: '/dashboard', icon: 'bx-grid-alt', label: 'Dashboard' },
   { to: '/dashboard/inventario', icon: 'bx-folder', label: 'Inventario' },
   { to: '/dashboard/categories', icon: 'bx-purchase-tag', label: 'Categorías' },
   { to: '/dashboard/orders', icon: 'bx-package', label: 'Ordenes' },
   { to: '/dashboard/clients', icon: 'bx-chart', label: 'Clientes' },
-  { to: '/dashboard/contact', icon: 'bx-phone', label: 'Contacto' },
+  { to: '/dashboard/zona-pesaje', icon: 'bx-phone', label: 'Zona pesaje' },
   { to: '/dashboard/facturas-compra', icon: 'bx-receipt', label: 'Facturas Compra' },  
   { to: '/dashboard/configuracion', icon: 'bx-cog', label: 'Configuración' }
->>>>>>> 335570135032ff1632001a10fe9b651ca37097be
 ]
 </script>
 

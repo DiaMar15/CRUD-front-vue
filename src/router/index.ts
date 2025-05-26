@@ -7,6 +7,7 @@ import InventarioView from '@/views/inventarioView.vue'
 import DashboardView from '@/views/HomeView.vue'
 import ConfiguracionView from '@/views/ConfiguracionView.vue' 
 import FacturacompraView from '@/views/FacturacompraView.vue'
+import entradaSalidaProductosView from '@/views/entradaSalidaProducto.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -55,6 +56,12 @@ const router = createRouter({
       path: '/dashboard/facturas-compra',
       name: 'facturas-compra',
       component: FacturacompraView,
+      meta: { layout: 'WireframeLayout' }
+    },
+     {
+      path: '/dashboard/zona-pesaje',
+      name: 'zona-pesaje',
+      component: entradaSalidaProductosView,
       meta: { layout: 'WireframeLayout' }
     },
   ],
