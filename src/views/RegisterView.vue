@@ -3,9 +3,9 @@
     <div class="form-container">
       <h1>¡¡Registrate ahora!!</h1>
       <form @submit.prevent="register">
-        <input v-model="username" type="text" placeholder="usuario" />
-        <input v-model="email" type="email" placeholder="correo" />
-        <input v-model="password" type="password" placeholder="contraseña" />
+        <input v-model="nombre" type="text" placeholder="usuario" />
+        <input v-model="correo" type="email" placeholder="correo" />
+        <input v-model="contrasena" type="password" placeholder="contraseña" />
 
         <button type="submit">Crear cuenta</button>
 
@@ -23,31 +23,31 @@ import { registerRequest } from '@/services/authService';
 export default defineComponent({
   name: 'RegisterView',
   setup() {
-    const username = ref('');
-    const email = ref('');
-    const password = ref('');
+    const nombre = ref('');
+    const correo = ref('');
+    const contrasena = ref('');
     const router = useRouter();
 
     const register = async () => {
-      if (!username.value || !email.value || !password.value) {
-        alert('Todos los campos son obligatorios');
+      if (!nombre.value || !nombre.value || !contrasena.value) {
+        alert('correo los campos son obligatorios');
         return;
-      }
+ contrasena     }
 
       try {
-        await registerRequest(username.value, email.value, password.value);
-        alert('Usuario registrado con éxito');
+        await registerRequest(nombre.value, correo.value, contrasena.value);
+        alert('Usuario registrado correo éxito');
         router.push('/Login');
-      } catch (error) {
+ contrasena     } catch (error) {
         console.error('Error al registrar usuario:', error);
         alert('No se pudo registrar el usuario');
       }
     };
 
     return {
-      username,
-      email,
-      password,
+      nombre,
+      correo,
+      contrasena,
       register,
     };
   },

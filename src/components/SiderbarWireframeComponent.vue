@@ -5,12 +5,13 @@
     </div>
     <nav>
       <ul>
-        <li><router-link to="/home">Inicio</router-link></li>
+        <li><router-link to="/dashboard">Inicio</router-link></li>
         <li><router-link to="/inventario">Inventario</router-link></li>
         <li><router-link to="/categories">Categorías</router-link></li>
         <li><router-link to="/orders">Pedidos</router-link></li>
         <li><router-link to="/clients">Clientes</router-link></li>
         <li><router-link to="/contact">Contacto</router-link></li>
+        <li><router-link to="/configuracion">Configuración</router-link></li>
       </ul>
     </nav>
   </aside>

@@ -4,7 +4,9 @@ import LoginView from '@/views/LoginView.vue'
 import RegisterView from '@/views/RegisterView.vue'
 import RestoreView from '@/views/RestoreView.vue'
 import InventarioView from '@/views/inventarioView.vue'
-import HomeView from '@/views/HomeView.vue'
+import DashboardView from '@/views/HomeView.vue'
+import ConfiguracionView from '@/views/ConfiguracionView.vue' 
+import FacturacompraView from '@/views/FacturacompraView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -13,48 +15,55 @@ const router = createRouter({
       path: '/',
       redirect: '/login',
     },
-
     {
       path: '/login',
       name: 'login',
       component: LoginView,
       meta: { layout: 'AuthLayout' },
     },
-
     {
       path: '/register',
       name: 'register',
       component: RegisterView,
       meta: { layout: 'AuthLayout' },
     },
-
     {
       path: '/restore',
       name: 'restore',
       component: RestoreView,
       meta: { layout: 'AuthLayout' },
     },
-
     {
-      path: '/inventario',
+      path: '/dashboard',
+      name: 'dashboard',
+      component: DashboardView,
+      meta: { layout: 'WireframeLayout' }
+    },
+    {
+      path: '/dashboard/inventario',
       name: 'inventario',
       component: InventarioView,
       meta: { layout: 'WireframeLayout' }
     },
     {
-      path: '/home',
-      name: 'home',
-      component: HomeView,
-      meta: { layout: 'WireframeLayout' },
-    }
+      path: '/dashboard/configuracion',
+      name: 'configuracion',
+      component: ConfiguracionView,
+      meta: { layout: 'WireframeLayout' }
+    },
+    {
+      path: '/dashboard/facturas-compra',
+      name: 'facturas-compra',
+      component: FacturacompraView,
+      meta: { layout: 'WireframeLayout' }
+    },
   ],
 })
 
 router.beforeEach((to, from, next) => {
   const authStore = useAuthStore()
-
-  if (to.meta.requiresAuth && !authStore.isAuthenticated()) {
-    next('/login') // Si no está autenticado, redirigir al login
+  if (to.meta.requiresAuth && !authStore.isAuthenticated) {
+    next('/login')
   } else {
     next()
   }
