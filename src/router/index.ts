@@ -63,7 +63,7 @@ const router = createRouter({
       name: 'zona-pesaje',
       component: entradaSalidaProductosView,
       meta: { layout: 'WireframeLayout' }
-    },
+    }
   ],
 })
 

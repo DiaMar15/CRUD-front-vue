@@ -5,16 +5,13 @@
       <div class="logo-details">
         <span v-if="isOpen" class="logo_name">Ventryx</span>
         <button class="menu-btn" @click="toggleSidebar" aria-label="Desplegar menú">
-          <i
-            class="bx"
-            :class="isOpen ? 'bx-menu-alt-right bx-md' : 'bx-menu bx-md'"
-          ></i>
+          <i class="bx" :class="isOpen ? 'bx-menu-alt-right bx-md' : 'bx-menu bx-md'"></i>
         </button>
       </div>
       <ul class="nav-list">
         <li v-if="isOpen">
-          <i class='bx bx-search bx-md'></i>
-          <input type="text" placeholder="Buscar...">
+          <i class="bx bx-search bx-md"></i>
+          <input type="text" placeholder="Buscar..." />
           <span class="tooltip">Buscar</span>
         </li>
         <li v-for="item in menuItems" :key="item.to">
@@ -38,30 +35,30 @@
 </template>
 
 <script setup lang="ts">
-import { HeaderWireframeComponent } from '@/components/HeaderWireframeComponent.vue'
-import { ref } from 'vue'
+import HeaderWireframeComponent from "@/components/HeaderWireframeComponent.vue";
+import { ref } from "vue";
 
-const isDarkMode = ref(false)
-const isOpen = ref(false)
+const isDarkMode = ref(false);
+const isOpen = ref(false);
 
 function toggleSidebar() {
-  isOpen.value = !isOpen.value
+  isOpen.value = !isOpen.value;
 }
 
 const menuItems = [
-  { to: '/dashboard', icon: 'bx-grid-alt', label: 'Dashboard' },
-  { to: '/dashboard/inventario', icon: 'bx-folder', label: 'Inventario' },
-  { to: '/dashboard/categories', icon: 'bx-purchase-tag', label: 'Categorías' },
-  { to: '/dashboard/orders', icon: 'bx-package', label: 'Ordenes' },
-  { to: '/dashboard/clients', icon: 'bx-chart', label: 'Clientes' },
-  { to: '/dashboard/zona-pesaje', icon: 'bx-phone', label: 'Zona pesaje' },
-  { to: '/dashboard/facturas-compra', icon: 'bx-receipt', label: 'Facturas Compra' },  
-  { to: '/dashboard/configuracion', icon: 'bx-cog', label: 'Configuración' }
-]
+  { to: "/dashboard", icon: "bx-grid-alt", label: "Dashboard" },
+  { to: "/dashboard/inventario", icon: "bx-folder", label: "Inventario" },
+  { to: "/dashboard/categories", icon: "bx-purchase-tag", label: "Categorías" },
+  { to: "/dashboard/orders", icon: "bx-package", label: "Ordenes" },
+  { to: "/dashboard/clients", icon: "bx-chart", label: "Clientes" },
+  { to: "/dashboard/zona-pesaje", icon: "bx-box", label: "Zona pesaje" },
+  { to: "/dashboard/facturas-compra", icon: "bx-receipt", label: "Facturas Compra" },
+  { to: "/dashboard/configuracion", icon: "bx-cog", label: "Configuración" },
+];
 </script>
 
 <style scoped>
-@import url('https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css');
+@import url("https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css");
 
 .dashboard-layout {
   display: flex;
@@ -165,7 +162,7 @@ const menuItems = [
 
 .sidebar li a:hover {
   background: #fff;
-  color: #11101D;
+  color: #11101d;
 }
 
 .sidebar li a .bx {
@@ -181,7 +178,7 @@ const menuItems = [
   width: 100%;
   justify-content: flex-start;
   padding-left: 18px;
-  background: #11101D;
+  background: #11101d;
   border-radius: 12px;
 }
 
@@ -208,7 +205,7 @@ const menuItems = [
 
 .sidebar li a:hover .links_name,
 .sidebar li a:hover .bx {
-  color: #11101D;
+  color: #11101d;
 }
 
 .sidebar li .tooltip {
@@ -226,7 +223,7 @@ const menuItems = [
   pointer-events: none;
   transform: translateY(-50%);
   transition: opacity 0.4s;
-  color: #11101D;
+  color: #11101d;
 }
 
 .sidebar li:hover .tooltip {

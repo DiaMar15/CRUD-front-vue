@@ -1,32 +1,32 @@
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { useAuthStore } from '@/stores/auth'
-import { loginRequest } from '@/services/authService'
+import { defineComponent, ref } from "vue";
+import { useRouter } from "vue-router";
+import { useAuthStore } from "@/stores/auth";
+import { loginRequest } from "@/services/authService";
 
 export default defineComponent({
-  name: 'LoginView',
+  name: "LoginView",
   setup() {
-    const username = ref('')
-    const password = ref('')
-    const router = useRouter()
-    const authStore = useAuthStore()
+    const username = ref("");
+    const password = ref("");
+    const router = useRouter();
+    const authStore = useAuthStore();
 
     const login = async () => {
       if (!username.value || !password.value) {
-        alert('Por favor, ingresa usuario y contraseña');
+        alert("Por favor, ingresa usuario y contraseña");
         return;
       }
 
       try {
-        const data = await loginRequest(username.value, password.value)
-        const { token, user } = data
-        authStore.login(user, token)
-        console.log('Inicio de sesión exitoso')
-        router.push('/home')
+        const data = await loginRequest(username.value, password.value);
+        const { token, user } = data;
+        authStore.login(user, token);
+        console.log("Inicio de sesión exitoso");
+        router.push("/dashboard");
       } catch (error) {
-        console.error('Error al iniciar sesión:', error)
-        alert('Usuario o contraseña incorrectos')
+        console.error("Error al iniciar sesión:", error);
+        alert("Usuario o contraseña incorrectos");
       }
     };
 
@@ -34,9 +34,9 @@ export default defineComponent({
       username,
       password,
       login,
-    }
+    };
   },
-})
+});
 </script>
 
 <template>

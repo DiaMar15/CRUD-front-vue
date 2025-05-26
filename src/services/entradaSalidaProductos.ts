@@ -3,27 +3,38 @@ import axios from 'axios';
 // Variable global para la URL base del backend
 const API_BASE_URL = 'http://localhost:8080/api/ocr';
 
-export async function procesarImagenService(imagen: File): Promise<string> {
+export async function procesarImagenService(imagen: File): Promise<any> {
   const formData = new FormData();
   formData.append('image', imagen);
-  const response = await axios.post<{ text: string }>(
+  const response = await axios.post(
     `${API_BASE_URL}/extract-text`,
     formData,
     { headers: { 'Content-Type': 'multipart/form-data' } }
   );
-  return response.data.text;
+  return response.data;
 }
 
-export async function obtenerPesoService( id: number, valor: number, unidad: string, categoria: string) {
-  
-  const response = await axios.post(`${API_BASE_URL}/peso`, {
-    headers: {
-    'Content-Type': 'multipart/form-data'
-  },
-    text: valor.toString(),
-    uM: unidad,
-    categoria: categoria
-  });
+export async function obtenerPesoService(
+  id: number,
+  valor: number,
+  unidad: string,
+  categoria: string,
+  estado: string
+): Promise<number> {
+  const response = await axios.post(
+    `${API_BASE_URL}/peso`,
+    {
+      text: valor.toString(),
+      uM: unidad,
+      categoria: categoria,
+      estado: estado
+    },
+    {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }
+  );
   return response.data.peso;
 }
 
@@ -33,7 +44,7 @@ export async function obtenerRegistrosPesos() {
   return response.data; // Array de objetos: [{ producto, cantidad, peso, uM }, ...]
 }
 
-export async function actualizarRegistroOCR(id: number, data: { text: number, uM: string, categoria: string }) {
+export async function actualizarRegistroOCR(id: number, data: { text: number, uM: string, categoria: string, estado: string }) {
   const response = await axios.put(`${API_BASE_URL}/${id}`, data);
   return response.data;
 }
